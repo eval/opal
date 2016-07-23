@@ -116,38 +116,38 @@ Use PATTERN environment variable to manually set the glob for specs:
 DESC
 
 %w[ruby opal].each do |suite|
-  desc "Run the MSpec/#{suite} test suite on Opal::Sprockets/phantomjs" + pattern_usage
-  task :"mspec_#{suite}_sprockets_phantomjs" do
-    filename = File.expand_path('tmp/mspec_sprockets_phantomjs.rb')
-    runner   = "#{__dir__}/testing/sprockets-phantomjs.js"
-    port     = 9999
-    url      = "http://localhost:#{port}/"
-
-    mkdir_p File.dirname(filename)
-    MSpecSuite.write_file filename, MSpecSuite.specs(ENV.to_hash.merge 'SUITE' => suite)
-
-    MSpecSuite.stubs.each {|s| ::Opal::Config.stubbed_files << s }
-
-    Opal::Config.arity_check_enabled = true
-    Opal::Config.freezing_stubs_enabled = true
-    Opal::Config.tainting_stubs_enabled = false
-    Opal::Config.dynamic_require_severity = :warning
-
-    Opal.use_gem 'mspec'
-    Opal.append_path 'spec'
-    Opal.append_path 'lib'
-    Opal.append_path File.dirname(filename)
-
-    app = Opal::Server.new { |s| s.main = File.basename(filename) }
-    server = Thread.new { Rack::Server.start(app: app, Port: port) }
-    sleep 1
-
-    begin
-      sh 'phantomjs', runner, url
-    ensure
-      server.kill if server.alive?
-    end
-  end
+  # desc "Run the MSpec/#{suite} test suite on Opal::Sprockets/phantomjs" + pattern_usage
+  # task :"mspec_#{suite}_sprockets_phantomjs" do
+  #   filename = File.expand_path('tmp/mspec_sprockets_phantomjs.rb')
+  #   runner   = "#{__dir__}/testing/sprockets-phantomjs.js"
+  #   port     = 9999
+  #   url      = "http://localhost:#{port}/"
+  #
+  #   mkdir_p File.dirname(filename)
+  #   MSpecSuite.write_file filename, MSpecSuite.specs(ENV.to_hash.merge 'SUITE' => suite)
+  #
+  #   MSpecSuite.stubs.each {|s| ::Opal::Config.stubbed_files << s }
+  #
+  #   Opal::Config.arity_check_enabled = true
+  #   Opal::Config.freezing_stubs_enabled = true
+  #   Opal::Config.tainting_stubs_enabled = false
+  #   Opal::Config.dynamic_require_severity = :warning
+  #
+  #   Opal.use_gem 'mspec'
+  #   Opal.append_path 'spec'
+  #   Opal.append_path 'lib'
+  #   Opal.append_path File.dirname(filename)
+  #
+  #   app = Opal::Server.new { |s| s.main = File.basename(filename) }
+  #   server = Thread.new { Rack::Server.start(app: app, Port: port) }
+  #   sleep 1
+  #
+  #   begin
+  #     sh 'phantomjs', runner, url
+  #   ensure
+  #     server.kill if server.alive?
+  #   end
+  # end
 
   %w[nodejs phantomjs].each do |platform|
     desc "Run the MSpec test suite on Opal::Builder/#{platform}" + pattern_usage
